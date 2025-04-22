@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 using System;
-
+using CryptoAppDemoSimple;
 namespace CryptoApp;
 
 class Program

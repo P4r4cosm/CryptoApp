@@ -1,0 +1,97 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="800"
+        x:Class="CryptoAppDemoSimple.ReceiverWindow"
+        Title="Получатель"
+        Width="650" Height="800"
+        >
+
+    <!-- Основной Grid окна: Контент (*), Лог (Auto) -->
+    <Grid RowDefinitions="*, Auto" Margin="10">
+
+         <!-- === Верхняя часть: Контент (Grid.Row="0") === -->
+         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0">
+             <StackPanel Orientation="Vertical" Spacing="10">
+
+                <!-- Заголовок Окна -->
+                 <TextBlock Text="Окно Получателя" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+
+                <!-- Блок 1: Ключи Получателя + Тест Простоты -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3" Padding="15" Margin="5,0,5,5">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="1. Ключи Получателя и Тест" FontWeight="Bold" FontSize="14"/>
+
+                         <!-- Тест простоты -->
+                         <TextBlock Text="Проверить число на простоту:" Margin="0,5,0,0"/>
+                         <StackPanel Orientation="Horizontal" Spacing="5">
+                             <TextBox Name="PrimeCandidateInput" Text="23" Width="180"/> <!-- Другое значение по умолчанию -->
+                             <Button Name="TestPrimalityButton" Content="Тестировать" Click="TestPrimality_Click"/>
+                         </StackPanel>
+                         <Separator Margin="0,5"/>
+
+                        <!-- Генерация Ключей -->
+                        <Button Name="GenerateReceiverPrimesButton" Content="Сгенерировать Простые p' и q'" Click="GenerateReceiverPrimes_Click" HorizontalAlignment="Stretch"/>
+                         <WrapPanel Orientation="Horizontal" ItemWidth="220">
+                            <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,0,10,0">
+                                <TextBlock Text="p':" VerticalAlignment="Center" Width="20"/>
+                                <TextBox Name="PTextBox" Width="180" IsReadOnly="True"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                 <TextBlock Text="q':" VerticalAlignment="Center" Width="20"/>
+                                 <TextBox Name="QTextBox" Width="180" IsReadOnly="True"/>
+                            </StackPanel>
+                        </WrapPanel>
+                        <Button Name="GenerateReceiverKeysButton" Content="Сгенерировать Ключи Получателя" Click="GenerateReceiverKeys_Click" HorizontalAlignment="Stretch"/>
+                         <TextBlock Text="Открытый ключ (N, e):"/>
+                         <StackPanel Orientation="Horizontal" Spacing="5">
+                              <TextBox Name="ReceiverNTextBox" Width="250" Watermark="N Получателя" IsReadOnly="True"/>
+                              <TextBox Name="ReceiverETextBox" Width="100" Watermark="e Получателя" IsReadOnly="True"/>
+                         </StackPanel>
+                          <TextBlock Text="Секретный ключ (d - для демо):"/>
+                          <TextBox Name="ReceiverDTextBox" Watermark="d Получателя" IsReadOnly="True"/>
+                          <Button Name="SendPublicKeyButton" Content="Отправить Открытый Ключ Отправителю" Click="SendPublicKey_Click" HorizontalAlignment="Stretch"/>
+
+                          <TextBlock Text="Открытый ключ Отправителя (N, e):" Margin="0,10,0,0"/>
+                           <StackPanel Orientation="Horizontal" Spacing="5">
+                              <TextBox Name="SenderNTextBox" Width="250" Watermark="N Отправителя (принят)" IsReadOnly="True"/>
+                              <TextBox Name="SenderETextBox" Width="100" Watermark="e Отправителя (принят)" IsReadOnly="True"/>
+                         </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                 <!-- Блок 2: Полученные Данные и Проверка -->
+                 <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3" Padding="15" Margin="5,0,5,5">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="2. Получение и Проверка" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="Полученное сообщение (Hex):"/>
+                        <TextBox Name="EncryptedDataTextBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" MaxHeight="150"/>
+                        <TextBlock Text="Полученная подпись (Hex):"/>
+                        <TextBox Name="SignatureTextBox" IsReadOnly="True" />
+                        <Button Name="DecryptVerifyButton" Content="Расшифровать и Проверить Подпись" Click="DecryptVerify_Click" HorizontalAlignment="Stretch"/>
+                        <TextBlock Text="Расшифрованное сообщение:"/>
+                        <TextBox Name="DecryptedMessageTextBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" MaxHeight="150"/>
+                        <TextBlock Text="Результат проверки подписи:" FontWeight="SemiBold"/>
+                        <TextBlock Name="VerificationStatusTextBlock" Text="Ожидание проверки..." FontWeight="Bold" FontSize="13"/>
+                    </StackPanel>
+                 </Border>
+
+            </StackPanel>
+             <!-- Конец StackPanel контента -->
+        </ScrollViewer>
+         <!-- Конец ScrollViewer контента -->
+
+
+         <!-- === Нижняя часть: Лог (Grid.Row="1") === -->
+          <Border Grid.Row="1" BorderBrush="DarkGray" BorderThickness="0,1,0,0" Margin="5,10,5,5">
+             <DockPanel LastChildFill="True" MinHeight="150" MaxHeight="250">
+                  <TextBlock DockPanel.Dock="Top" Text="Лог Получателя:" FontWeight="Bold" FontSize="14" Margin="10,5,10,5"/>
+                  <ScrollViewer Name="LogScrollViewer" VerticalScrollBarVisibility="Auto" Margin="5,0,5,5">
+                      <TextBox Name="LogTextBox" Margin="5" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch" FontSize="12" BorderThickness="0"/>
+                  </ScrollViewer>
+             </DockPanel>
+         </Border>
+
+    </Grid>
+</Window>

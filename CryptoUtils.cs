@@ -8,7 +8,51 @@ public static class CryptoUtils
     private static Random random = new Random();
 
     // --- Базовые Математические Помощники (с учетом переполнения long) ---
+    
+    
+    public static (long n, long e, long d) GenerateKeyPairInternal(long pVal, long qVal)
+    {
+         // Вычисляем N = p * q с проверкой на переполнение
+         long n;
+         try
+         {
+            n = checked(pVal * qVal); // Используем checked для явного контроля переполнения
+         }
+         catch (OverflowException)
+         {
+             throw new OverflowException($"Переполнение при вычислении N = p * q ({pVal} * {qVal}). Выберите меньшие p и q.");
+         }
 
+         // Вычисляем phi(n) = (p-1) * (q-1) с проверкой на переполнение
+         long p_1 = pVal - 1;
+         long q_1 = qVal - 1;
+         long phi;
+         try
+         {
+             phi = checked(p_1 * q_1);
+         }
+          catch (OverflowException)
+         {
+              throw new OverflowException($"Переполнение при вычислении Phi = (p-1)*(q-1) ({p_1} * {q_1}).");
+         }
+
+         if (phi <= 2) throw new ArgumentException("Значение Phi слишком мало, невозможно найти экспоненту 'e'.");
+
+         // Выбираем открытую экспоненту 'e' (часто 65537, но мы найдем меньшую)
+         // Ищем первое нечетное e > 1, взаимно простое с phi
+         long e = 3;
+         while (Gcd(e, phi) != 1) // Используем Gcd из этого же класса CryptoUtils
+         {
+             e += 2; // Проверяем только нечетные
+             if (e >= phi) // Это не должно произойти для phi > 2
+                 throw new ArgumentException($"Не удалось найти подходящую открытую экспоненту 'e' < Phi ({phi}).");
+         }
+
+         // Вычисляем секретную экспоненту 'd' такую, что d*e ≡ 1 (mod phi)
+         long d = ModInverse(e, phi); // Используем ModInverse из этого же класса CryptoUtils
+
+         return (n, e, d);
+    }
     // Модульное умножение (чтобы избежать переполнения a*b)
     // Используется метод "Русского крестьянского умножения" (бинарный метод)
     public static long ModMul(long a, long b, long m)

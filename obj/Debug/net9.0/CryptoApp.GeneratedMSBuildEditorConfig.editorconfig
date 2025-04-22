@@ -24,5 +24,8 @@ build_property.EnableCodeStyleSeverity =
 [/home/kali/Desktop/C\# projects/CryptoApp/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/kali/Desktop/C\# projects/CryptoApp/MainWindow.axaml]
+[/home/kali/Desktop/C\# projects/CryptoApp/ReceiverWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/kali/Desktop/C\# projects/CryptoApp/SenderWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
