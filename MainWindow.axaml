@@ -1,0 +1,152 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="850"
+        x:Class="CryptoAppDemoSimple.MainWindow"
+        Title="Демонстрация Крипто Протокола (Без библиотек)"
+        Width="1000" Height="850">
+
+    <!-- Корневой Grid: Заголовок (0), Контент (1) -->
+    <!-- Строка статуса удалена, поэтому нижний ряд Auto не нужен -->
+    <Grid RowDefinitions="Auto, *" Margin="10">
+
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0" Text="Упрощенная Демонстрация Криптографического Протокола (Принципы RSA)"
+                   FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,15"/>
+
+        <!-- Основная область Контента (Занимает всю оставшуюся высоту) -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*"
+              RowDefinitions="Auto,Auto,*,*">
+
+            <!-- === Колонка 0 === -->
+
+            <!-- Блок 1: Генерация и Тест Простых Чисел (Row 0) -->
+            <Border Grid.Column="0" Grid.Row="0"
+                    BorderBrush="Gray" BorderThickness="1" CornerRadius="3"
+                    Padding="15" Margin="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="1. Генерация и Тест Простых Чисел" FontWeight="Bold" FontSize="14" Margin="0,0,0,5"/>
+                    <Button Name="GeneratePrimesButton" Content="Сгенерировать Простые p и q" Click="GeneratePrimes_Click" HorizontalAlignment="Stretch"/>
+                    <WrapPanel Orientation="Horizontal" ItemWidth="220" Margin="0,5,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,0,10,0">
+                            <TextBlock Text="p:" VerticalAlignment="Center" Width="20"/>
+                            <TextBox Name="PTextBox" Width="180" IsReadOnly="True"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                             <TextBlock Text="q:" VerticalAlignment="Center" Width="20"/>
+                             <TextBox Name="QTextBox" Width="180" IsReadOnly="True"/>
+                        </StackPanel>
+                    </WrapPanel>
+                    <TextBlock Text="Проверить число на простоту:" Margin="0,10,0,0"/>
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <TextBox Name="PrimeCandidateInput" Text="17" Width="180"/>
+                        <Button Name="TestPrimalityButton" Content="Тестировать" Click="TestPrimality_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Блок 2: Генерация Ключей (Row 1) -->
+             <Border Grid.Column="0" Grid.Row="1"
+                     BorderBrush="Gray" BorderThickness="1" CornerRadius="3"
+                     Padding="15" Margin="5">
+                 <StackPanel Spacing="10">
+                     <TextBlock Text="2. Генерация Ключей" FontWeight="Bold" FontSize="14" Margin="0,0,0,5"/>
+                     <Button Name="GenerateKeysButton" Content="Сгенерировать Ключи Отправителя и Получателя" Click="GenerateKeys_Click" HorizontalAlignment="Stretch"/>
+                     <!-- ... содержимое ключей ... -->
+                     <TextBlock Text="Ключи Отправителя:" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                     <TextBlock Text="(N, e) - Открытый ключ"/>
+                     <StackPanel Orientation="Horizontal" Spacing="5">
+                          <TextBox Name="SenderNTextBox" Width="180" Watermark="N Отправителя" IsReadOnly="True"/>
+                          <TextBox Name="SenderETextBox" Width="180" Watermark="e Отправителя" IsReadOnly="True"/>
+                     </StackPanel>
+                      <TextBlock Text="(d) - Секретный ключ (показан для демо)"/>
+                      <TextBox Name="SenderDTextBox" Width="365" Watermark="d Отправителя" IsReadOnly="True"/>
+                     <TextBlock Text="Ключи Получателя:" FontWeight="SemiBold" Margin="0,10,0,0"/>
+                     <TextBlock Text="(N, e) - Открытый ключ"/>
+                     <StackPanel Orientation="Horizontal" Spacing="5">
+                          <TextBox Name="ReceiverNTextBox" Width="180" Watermark="N Получателя" IsReadOnly="True"/>
+                          <TextBox Name="ReceiverETextBox" Width="180" Watermark="e Получателя" IsReadOnly="True"/>
+                     </StackPanel>
+                      <TextBlock Text="(d) - Секретный ключ (показан для демо)"/>
+                      <TextBox Name="ReceiverDTextBox" Width="365" Watermark="d Получателя" IsReadOnly="True"/>
+                 </StackPanel>
+            </Border>
+
+            <!-- Блок 3: Шифрование и Подпись (Row 2 - первая '*' строка) -->
+             <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                     BorderBrush="Gray" BorderThickness="1" CornerRadius="3"
+                     Padding="0" Margin="5"> <!-- Убрал Padding у Border, т.к. будет у ScrollViewer -->
+
+                 <!-- !!! ДОБАВЛЕН ScrollViewer !!! -->
+                 <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="15"> <!-- Padding теперь здесь -->
+
+                     <!-- Существующий StackPanel теперь внутри ScrollViewer -->
+                     <StackPanel Spacing="10">
+                         <TextBlock Text="3. Шифрование и Подпись" FontWeight="Bold" FontSize="14" Margin="0,0,0,5"/>
+                         <TextBlock Text="Исходное сообщение для отправки:"/>
+                         <TextBox Name="OriginalMessageTextBox" Text="Проверка связи!"
+                                  AcceptsReturn="True" TextWrapping="Wrap"
+                                  MinHeight="60"/> <!-- MinHeight остается -->
+                         <Button Name="EncryptSignButton" Content="Зашифровать и Подписать Сообщение" Click="EncryptSign_Click" HorizontalAlignment="Stretch"/>
+                         <TextBlock Text="Зашифрованное сообщение (Hex - для пересылки):"/>
+                         <TextBox Name="EncryptedDataTextBox" IsReadOnly="True"
+                                  AcceptsReturn="True" TextWrapping="Wrap"
+                                  MinHeight="60"/> <!-- MinHeight остается -->
+                         <TextBlock Text="Электронная Подпись (Hex - для пересылки):"/>
+                         <TextBox Name="SignatureTextBox" IsReadOnly="True" />
+                     </StackPanel>
+                     <!-- Конец StackPanel -->
+
+                 </ScrollViewer>
+                 <!-- Конец ScrollViewer -->
+
+            </Border>
+
+            <!-- === Колонка 1 === -->
+
+            <!-- Блок 4: Расшифрование и Проверка (Rows 0 и 1) -->
+             <Border Grid.Column="1" Grid.Row="2" Grid.RowSpan="2"
+                     BorderBrush="Gray" BorderThickness="1" CornerRadius="3"
+                     Padding="15" Margin="5">
+                 <StackPanel Spacing="10">
+                     <TextBlock Text="4. Расшифрование и Проверка Подписи" FontWeight="Bold" FontSize="14" Margin="0,0,0,5"/>
+                     <TextBlock Text="(Выполняется на стороне Получателя)"/>
+                     <Button Name="DecryptVerifyButton" Content="Расшифровать Сообщение и Проверить Подпись" Click="DecryptVerify_Click" HorizontalAlignment="Stretch"/>
+                     <TextBlock Text="Расшифрованное сообщение:"/>
+                     <TextBox Name="DecryptedMessageTextBox" IsReadOnly="True"
+                              AcceptsReturn="True" TextWrapping="Wrap"
+                              MinHeight="60"/> <!-- Используем MinHeight вместо Height -->
+                     <TextBlock Text="Результат проверки подписи:" FontWeight="SemiBold"/>
+                     <TextBlock Name="VerificationStatusTextBlock" Text="Статус проверки..." FontWeight="Bold" FontSize="13"/>
+                 </StackPanel>
+            </Border>
+
+            <!-- Блок 5: Лог Выполнения (Rows 2 и 3 - обе '*' строки) -->
+            <!-- !!! ИЗМЕНЕН Grid.Row и Grid.RowSpan !!! -->
+            <Border Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"
+                    BorderBrush="DarkGray" BorderThickness="1" CornerRadius="3"
+                    Padding="0" Margin="5">
+                <!-- Используем DockPanel, чтобы ScrollViewer занял всё доступное место -->
+                <DockPanel LastChildFill="True">
+                     <TextBlock DockPanel.Dock="Top" Text="Лог Выполнения:" FontWeight="Bold" FontSize="14" Margin="15,10,15,5"/>
+                     <!-- ScrollViewer теперь будет растягиваться -->
+                     <ScrollViewer Name="LogScrollViewer" VerticalScrollBarVisibility="Auto" Margin="5,0,5,5">
+                         <TextBox Name="LogTextBox"
+                                  Margin="5"
+                                  IsReadOnly="True"
+                                  AcceptsReturn="True"
+                                  TextWrapping="Wrap"
+                                  VerticalAlignment="Stretch"
+                                  FontSize="12"
+                                  BorderThickness="0"/>
+                     </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+        </Grid>
+
+        <!-- Строка статуса удалена -->
+
+    </Grid>
+</Window>
